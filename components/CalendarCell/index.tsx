@@ -1,22 +1,29 @@
-import EventCell from "@components/EventCell"
-import { Event } from "@utils/types"
+import EventCell from "@components/EventCell";
+import { TEvent } from "@utils/types";
+import { IoMdAdd } from "react-icons/io";
 
 interface Props {
-    date: number
-    events: Event[]
+  date: number;
+  events: TEvent[];
 }
 
 const CalendarCell: React.FC<Props> = ({ date, events }) => {
-    return (
-        <td className="bg-gray-400 text-black p-2">
-            <div className="flex flex-col gap-2">
-                <p className="font-bold text-xl">{date}</p>
-                {events?.map((event) => {
-                    return <EventCell event={event} backgroundColor={""} />
-                })}
-            </div>
-        </td>
-    )
-}
+  return (
+    <div className="bg-gray-400 border-[0.25px] border-gray-500 text-black p-2 flex flex-col gap-2 min-h-[150px]">
+      <div className="flex justify-between">
+        <p className="font-bold text-xl">{date}</p>
+        <button
+          className="flex items-center justify-center bg-black/30 rounded-md w-8 h-8"
+          onClick={() => {}}
+        >
+          <IoMdAdd className="text-white" />
+        </button>
+      </div>
+      {events?.map((event, index) => {
+        return <EventCell key={index} event={event} backgroundColor={""} />;
+      })}
+    </div>
+  );
+};
 
-export default CalendarCell
+export default CalendarCell;

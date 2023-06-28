@@ -1,13 +1,11 @@
 interface Props {
-    text: string
+  text: string;
 }
 
 const CalendarHeader: React.FC<Props> = ({ text }) => {
-    return (
-        <th className="bg-black text-center text-white pt-3 pb-8">
-            {text}
-        </th>
-    )
-}
+  return (
+    <div className="bg-black text-center text-white pt-3 pb-8">{text}</div>
+  );
+};
 
-export default CalendarHeader
+export default CalendarHeader;
