@@ -3,19 +3,17 @@ import CalendarEmptyCell from "@components/CalendarEmptyCell";
 import Modal from "@components/Modal";
 import { TEvent } from "@utils/types";
 import type { NextPage } from "next";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import CalendarHeader from "../components/CalendarHeader";
+import AddModal from "@components/AddModal";
 
 const Home: NextPage = () => {
-  const [addModalOpen, setAddModalOpen] = useState(-1)
   const today = new Date();
   const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 0);
   const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  const {
-    register,
-    handleSubmit,
-  } = useForm<TEvent>()
+  const [addDate, setAddDate] = useState(-1)
+  const [addModalOpen, setAddModalOpen] = useState(false)
   const weekDays = [
     "Sunday",
     "Monday",
@@ -36,26 +34,26 @@ const Home: NextPage = () => {
       return new Date(today.getFullYear(), today.getMonth(), index + 1);
     }
   );
-  const onSubmit = () => {
-
-  }
 
   return (
     <>
       <h1 className="text-center font-bold">
         {today.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
       </h1>
-      <div className="w-full grid grid-cols-7 border-gray-500 border-[0.25px]">
+      <div className="w-full grid grid-cols-7 border-gray-500 border-[0.25px] border-solid">
         {weekDays.map((day, index) => {
           return <CalendarHeader key={index} text={day} />;
         })}
         <CalendarEmptyCell gap={topGap} />
         {datesArray.map((date, index) => {
-          return <CalendarCell key={index} date={date.getDate()} events={[]} onAddClick={(date) => setAddModalOpen(date)} />;
+          return <CalendarCell key={index} date={date.getDate()} events={[]} onAddClick={(date) => {
+            setAddModalOpen(true)
+            setAddDate(date)
+          }} />;
         })}
         <CalendarEmptyCell gap={bottomGap} />
       </div>
-      
+      <AddModal date={addDate} addModalOpen={addModalOpen} setAddModalOpen={setAddModalOpen} />
     </>
   );
 };

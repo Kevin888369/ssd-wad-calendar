@@ -16,7 +16,7 @@ const gapClass: IMapper = {
 
 
 const CalendarEmptyCell: React.FC<Props> = ({ gap }) => {
-  return <div className={`bg-gray-400 border-[0.25px] border-gray-500 ${gapClass[gap] ?? ""}`}></div>;
+  return <div className={`bg-gray-400 border-[0.25px] border-gray-500 border-solid ${gapClass[gap] ?? ""}`}></div>;
 };
 
 export default CalendarEmptyCell;
