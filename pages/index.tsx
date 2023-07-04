@@ -1,7 +1,7 @@
 import CalendarCell from "@components/CalendarCell";
 import CalendarEmptyCell from "@components/CalendarEmptyCell";
 import Modal from "@components/Modal";
-import { TEvent } from "@utils/types";
+import { LocalStorageEnum, TEvent } from "@utils/types";
 import type { NextPage } from "next";
 import { SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -35,6 +35,15 @@ const Home: NextPage = () => {
     }
   );
 
+  const onAddSubmit = (event: TEvent) => {
+    const allEvent = localStorage.getItem(LocalStorageEnum[LocalStorageEnum.ELocalEvent])
+
+    localStorage.setItem(LocalStorageEnum[LocalStorageEnum.ELocalEvent], JSON.stringify([
+      ...((allEvent && JSON.parse(allEvent)) ?? []),
+      event
+    ]))
+  }
+
   return (
     <>
       <h1 className="text-center font-bold">
@@ -53,7 +62,7 @@ const Home: NextPage = () => {
         })}
         <CalendarEmptyCell gap={bottomGap} />
       </div>
-      <AddModal date={addDate} addModalOpen={addModalOpen} setAddModalOpen={setAddModalOpen} />
+      <AddModal date={addDate} addModalOpen={addModalOpen} setAddModalOpen={setAddModalOpen} onAddEventSubmit={onAddSubmit} />
     </>
   );
 };

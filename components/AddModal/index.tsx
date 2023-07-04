@@ -1,21 +1,23 @@
 import Input from "@components/Input";
-import Modal from "@components/Modal"
-import { TEvent } from "@utils/types"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import Modal from "@components/Modal";
+import { LocalStorageEnum, TEvent, TFormAddEvent } from "@utils/types";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface Props {
   date: number;
   addModalOpen: boolean;
-  setAddModalOpen: Dispatch<SetStateAction<boolean>>
+  setAddModalOpen: Dispatch<SetStateAction<boolean>>;
+  onAddEventSubmit: (event: TEvent) => void
 }
 
-const AddModal: React.FC<Props> = ({ date, addModalOpen, setAddModalOpen }) => {
+const AddModal: React.FC<Props> = ({ date, addModalOpen, setAddModalOpen, onAddEventSubmit }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
-  } = useForm<TEvent>()
+    reset,
+    formState: { errors },
+  } = useForm<TFormAddEvent>()
   const today = new Date()
   const [mDate, setMDate] = useState(new Date(today.getFullYear(), today.getMonth(), date))
   
@@ -23,8 +25,15 @@ const AddModal: React.FC<Props> = ({ date, addModalOpen, setAddModalOpen }) => {
     setMDate(new Date(today.getFullYear(), today.getMonth(), date))
   }, [date])
   
-  const onSubmit = () => {
-
+  const onSubmit = (value: TFormAddEvent) => {
+    const [hours, minutes] = value.time.split(":")
+    onAddEventSubmit({
+      date: new Date(mDate.getFullYear(), mDate.getMonth(), mDate.getDate(), Number(hours), Number(minutes)),
+      eventName: value.eventName,
+      email: value.email
+    })
+    reset()
+    setAddModalOpen(false)
   }
 
   return (
@@ -45,7 +54,14 @@ const AddModal: React.FC<Props> = ({ date, addModalOpen, setAddModalOpen }) => {
           errors={errors}
           type="email"
         />
-        <button className="">Add</button>
+        <Input
+          register={register}
+          label="Time"
+          name="time"
+          errors={errors}
+          type="time"
+        />
+        <button className="text-lg text-white p-3 rounded-lg bg-gray-800">Add</button>
       </form>
     </Modal>
   )

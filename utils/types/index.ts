@@ -4,6 +4,12 @@ export type TEvent = {
     date: Date,
 }
 
+export type TFormAddEvent = {
+    eventName: string,
+    email: string,
+    time: string,
+}
+
 export type TDateCell = {
     id: string,
     date: number,
@@ -13,3 +19,7 @@ export type TDateCell = {
 export interface IMapper {
 	[key: string]: any | undefined
 }
+
+export enum LocalStorageEnum {
+    ELocalEvent,
+}  
