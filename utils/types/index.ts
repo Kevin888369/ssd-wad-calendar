@@ -1,25 +1,32 @@
 export type TEvent = {
+    id: string,
     eventName: string,
     email: string,
     date: Date,
+    color: string,
 }
 
-export type TFormAddEvent = {
+export type TFormEvent = {
     eventName: string,
     email: string,
     time: string,
 }
 
+export type TEditEvent = {
+    timestamp: number,
+    event: TEvent,
+}
+
 export type TDateCell = {
-    id: string,
-    date: number,
+    timestamp: number,
     events: TEvent[],
 }
 
 export interface IMapper {
-	[key: string]: any | undefined
+    [key: string]: any | undefined
 }
 
-export enum LocalStorageEnum {
-    ELocalEvent,
-}  
+export enum LocalStorage {
+    E_LOCAL_EVENT = "e_local_event",
+}
+

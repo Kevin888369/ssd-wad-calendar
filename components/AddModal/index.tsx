@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Input from "@components/Input";
 import Modal from "@components/Modal";
-import { LocalStorageEnum, TEvent, TFormAddEvent } from "@utils/types";
+import { getRandomColor } from "@utils/helper";
+import { TEvent, TFormEvent } from "@utils/types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -8,38 +10,62 @@ interface Props {
   date: number;
   addModalOpen: boolean;
   setAddModalOpen: Dispatch<SetStateAction<boolean>>;
-  onAddEventSubmit: (event: TEvent) => void
+  onAddEventSubmit: (timestamp: number, event: TEvent) => void;
 }
 
-const AddModal: React.FC<Props> = ({ date, addModalOpen, setAddModalOpen, onAddEventSubmit }) => {
+const AddModal: React.FC<Props> = ({
+  date,
+  addModalOpen,
+  setAddModalOpen,
+  onAddEventSubmit,
+}) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<TFormAddEvent>()
-  const today = new Date()
-  const [mDate, setMDate] = useState(new Date(today.getFullYear(), today.getMonth(), date))
-  
+  } = useForm<TFormEvent>();
+  const today = new Date();
+  const [mDate, setMDate] = useState(
+    new Date(today.getFullYear(), today.getMonth(), date)
+  );
+
   useEffect(() => {
-    setMDate(new Date(today.getFullYear(), today.getMonth(), date))
-  }, [date])
-  
-  const onSubmit = (value: TFormAddEvent) => {
-    const [hours, minutes] = value.time.split(":")
-    onAddEventSubmit({
-      date: new Date(mDate.getFullYear(), mDate.getMonth(), mDate.getDate(), Number(hours), Number(minutes)),
+    setMDate(new Date(today.getFullYear(), today.getMonth(), date));
+  }, [date]);
+
+  const onSubmit = (value: TFormEvent) => {
+    const [hours, minutes] = value.time.split(":");
+    const newDate = new Date(
+      mDate.getFullYear(),
+      mDate.getMonth(),
+      mDate.getDate(),
+      Number(hours),
+      Number(minutes)
+    )
+    const color = getRandomColor();
+    onAddEventSubmit(mDate.getTime(), {
+      id: `${newDate}-${color}-${value.eventName}`,
+      date: newDate,
       eventName: value.eventName,
-      email: value.email
-    })
-    reset()
-    setAddModalOpen(false)
-  }
+      email: value.email,
+      color: color,
+    });
+    reset();
+    setAddModalOpen(false);
+  };
 
   return (
     <Modal isModalOpen={addModalOpen} setModalOpen={setAddModalOpen}>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
-        <p className="text-2xl font-bold">Add event for {mDate.toLocaleString("id-ID", { month: "2-digit", year: "numeric", day: "numeric" })}</p>
+        <p className="text-2xl font-bold">
+          Add event for{" "}
+          {mDate.toLocaleString("id-ID", {
+            month: "2-digit",
+            year: "numeric",
+            day: "numeric",
+          })}
+        </p>
         <Input
           register={register}
           label="Event name"
@@ -61,10 +87,12 @@ const AddModal: React.FC<Props> = ({ date, addModalOpen, setAddModalOpen, onAddE
           errors={errors}
           type="time"
         />
-        <button className="text-lg text-white p-3 rounded-lg bg-gray-800">Add</button>
+        <button className="text-lg text-white p-3 rounded-lg bg-gray-800">
+          Add
+        </button>
       </form>
     </Modal>
-  )
-}
+  );
+};
 
-export default AddModal
+export default AddModal;
