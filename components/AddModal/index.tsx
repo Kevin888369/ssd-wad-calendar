@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Input from "@components/Input";
 import Modal from "@components/Modal";
-import { getRandomColor } from "@utils/helper";
+import { getRandomColor, getStringDateForDateCell } from "@utils/helper";
 import { TEvent, TFormEvent } from "@utils/types";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ interface Props {
   date: number;
   addModalOpen: boolean;
   setAddModalOpen: Dispatch<SetStateAction<boolean>>;
-  onAddEventSubmit: (timestamp: number, event: TEvent) => void;
+  onAddEventSubmit: (date: string, event: TEvent) => void;
 }
 
 const AddModal: React.FC<Props> = ({
@@ -44,8 +44,8 @@ const AddModal: React.FC<Props> = ({
       Number(minutes)
     )
     const color = getRandomColor();
-    onAddEventSubmit(mDate.getTime(), {
-      id: `${newDate}-${color}-${value.eventName}`,
+    onAddEventSubmit(getStringDateForDateCell(mDate), {
+      id: `${newDate.getTime()}-${color}-${Math.random() * 10000}`,
       date: newDate,
       eventName: value.eventName,
       email: value.email,
@@ -60,11 +60,7 @@ const AddModal: React.FC<Props> = ({
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
         <p className="text-2xl font-bold">
           Add event for{" "}
-          {mDate.toLocaleString("id-ID", {
-            month: "2-digit",
-            year: "numeric",
-            day: "numeric",
-          })}
+          {getStringDateForDateCell(mDate)}
         </p>
         <Input
           register={register}

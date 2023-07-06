@@ -7,14 +7,14 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface Props {
-  timestamp: number;
+  date: string;
   event: TEvent;
   editModalOpen: boolean;
   setEditModalOpen: Dispatch<SetStateAction<boolean>>;
-  onEditEventSubmit: (timestamp: number, event: TEvent) => void
+  onEditEventSubmit: (date: string, event: TEvent) => void
 }
 
-const EditModal: React.FC<Props> = ({ timestamp, event, editModalOpen, setEditModalOpen, onEditEventSubmit }) => {
+const EditModal: React.FC<Props> = ({ date, event, editModalOpen, setEditModalOpen, onEditEventSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -24,7 +24,14 @@ const EditModal: React.FC<Props> = ({ timestamp, event, editModalOpen, setEditMo
     defaultValues: {
       email: event.email,
       eventName: event.eventName,
-      time: `${event.date.getHours()}:${event.date.getMinutes()}`
+      time: event.date.toLocaleTimeString(
+        "en-US",
+        {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        }
+      ).replace("24:", "00:")
     }
   })
 
@@ -32,19 +39,25 @@ const EditModal: React.FC<Props> = ({ timestamp, event, editModalOpen, setEditMo
     reset({
       email: event.email,
       eventName: event.eventName,
-      time: `${event.date.getHours()}:${event.date.getMinutes()}`
+      time: event.date.toLocaleTimeString(
+        "en-US",
+        {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: false,
+        }
+      ).replace("24:", "00:")
     })
   }, [event])
   
   const onSubmit = (value: TFormEvent) => {
-    console.log(value)
-    const date = event.date
+    const mDate = event.date
     const [hours, minutes] = value.time.split(":")
-    date.setHours(Number(hours))
-    date.setMinutes(Number(minutes))
-    onEditEventSubmit(timestamp, {
+    mDate.setHours(Number(hours))
+    mDate.setMinutes(Number(minutes))
+    onEditEventSubmit(date, {
       ...event,
-      date: date,
+      date: mDate,
       eventName: value.eventName,
       email: value.email,
     })
@@ -55,7 +68,7 @@ const EditModal: React.FC<Props> = ({ timestamp, event, editModalOpen, setEditMo
   return (
     <Modal isModalOpen={editModalOpen} setModalOpen={setEditModalOpen}>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
-        <p className="text-2xl font-bold">Edit event {event.eventName} for {event.date.toLocaleString("id-ID", { month: "2-digit", year: "numeric", day: "numeric" })}</p>
+        <p className="text-2xl font-bold">Edit event {event.eventName} for {event.date.toLocaleString("id-ID", { month: "2-digit", year: "numeric", day: "2-digit" })}</p>
         <Input
           register={register}
           label="Event name"

@@ -13,12 +13,12 @@ export type TFormEvent = {
 }
 
 export type TEditEvent = {
-    timestamp: number,
+    date: string,
     event: TEvent,
 }
 
 export type TDateCell = {
-    timestamp: number,
+    date: string,
     events: TEvent[],
 }
 

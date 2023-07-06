@@ -17,6 +17,14 @@ export function getRandomColor(): string {
   }
 }
 
+export function getStringDateForDateCell(date: Date): string {
+  return date.toLocaleString("id-ID", {
+    month: "2-digit",
+    year: "numeric",
+    day: "2-digit",
+  })
+}
+
 export function getAllLocalEvent(): TDateCell[] {
   return typeof window !== "undefined" ? JSON.parse(localStorage.getItem(LocalStorage.E_LOCAL_EVENT) ?? "[]") : null
 }
